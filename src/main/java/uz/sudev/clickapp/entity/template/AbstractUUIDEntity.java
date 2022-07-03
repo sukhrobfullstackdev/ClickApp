@@ -16,7 +16,7 @@ import java.util.UUID;
 public abstract class AbstractUUIDEntity extends AbstractMainEntity {
     @Id
     @GeneratedValue(generator = "uuid2")
-    @Type(type = "org.hibernate.PostgresUUIDType")
+    @Type(type = "org.hibernate.type.PostgresUUIDType")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 }
