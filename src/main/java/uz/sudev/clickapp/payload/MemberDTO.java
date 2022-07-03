@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-import uz.sudev.clickapp.entity.enums.WorkspaceRoleName;
+import uz.sudev.clickapp.entity.enums.AddEditRemove;
 
 import java.util.UUID;
 
@@ -15,5 +15,5 @@ import java.util.UUID;
 public class MemberDTO {
     private UUID memberId;
     private UUID roleId;
-    private String methodType;
+    private AddEditRemove addEditRemove;
 }

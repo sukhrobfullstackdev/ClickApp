@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.sudev.clickapp.entity.*;
+import uz.sudev.clickapp.entity.enums.AddEditRemove;
 import uz.sudev.clickapp.entity.enums.WorkspacePermissionName;
 import uz.sudev.clickapp.entity.enums.WorkspaceRoleName;
 import uz.sudev.clickapp.payload.MemberDTO;
@@ -74,13 +75,13 @@ public class WorkspaceService implements WorkspaceServiceImplement {
             for (WorkspacePermissionName permission : WorkspacePermissionName.values()) {
                 workspacePermissions.add(new WorkspacePermission(workspaceRole, permission));
                 if (permission.getWorkspaceRoleNames().contains(WorkspaceRoleName.ROLE_ADMIN)) {
-                    workspacePermissions.add(new WorkspacePermission(admin,permission));
+                    workspacePermissions.add(new WorkspacePermission(admin, permission));
                 }
                 if (permission.getWorkspaceRoleNames().contains(WorkspaceRoleName.ROLE_MEMBER)) {
-                    workspacePermissions.add(new WorkspacePermission(member,permission));
+                    workspacePermissions.add(new WorkspacePermission(member, permission));
                 }
                 if (permission.getWorkspaceRoleNames().contains(WorkspaceRoleName.ROLE_GUEST)) {
-                    workspacePermissions.add(new WorkspacePermission(guest,permission));
+                    workspacePermissions.add(new WorkspacePermission(guest, permission));
                 }
             }
             workspacePermissionRepository.saveAll(workspacePermissions);
@@ -145,11 +146,44 @@ public class WorkspaceService implements WorkspaceServiceImplement {
 
     @Override
     public ResponseEntity<Message> addOrEditOrRemoveMemberOfWorkspace(Long workspaceId, MemberDTO memberDTO) {
-        Optional<Workspace> optionalWorkspace = workspaceRepository.findById(workspaceId);
-        if (optionalWorkspace.isPresent()) {
-            return null;
+        if (memberDTO.getAddEditRemove().equals(AddEditRemove.ADD)) {
+            Optional<Workspace> optionalWorkspace = workspaceRepository.findById(workspaceId);
+            if (optionalWorkspace.isPresent()) {
+                Optional<User> optionalUser = userRepository.findById(memberDTO.getMemberId());
+                if (optionalUser.isPresent()) {
+                    Optional<WorkspaceRole> optionalWorkspaceRole = workspaceRoleRepository.findById(memberDTO.getRoleId());
+                    if (optionalWorkspaceRole.isPresent()) {
+                        workspaceUserRepository.save(new WorkspaceUser(optionalWorkspace.get(), optionalUser.get(), optionalWorkspaceRole.get(), new Timestamp(System.currentTimeMillis())));
+                        return ResponseEntity.status(HttpStatus.CREATED).body(new Message(true, "The workspace user is successfully added!"));
+                    } else {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace role is not found!"));
+                    }
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The user is not found!"));
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace is not found!"));
+            }
+        } else if (memberDTO.getAddEditRemove().equals(AddEditRemove.EDIT)) {
+            Optional<WorkspaceUser> optionalWorkspaceUser = workspaceUserRepository.findByUserIdAndWorkspaceId(memberDTO.getMemberId(), workspaceId);
+            Optional<WorkspaceRole> optionalWorkspaceRole = workspaceRoleRepository.findById(memberDTO.getRoleId());
+            if (optionalWorkspaceUser.isPresent()) {
+                if (optionalWorkspaceRole.isPresent()) {
+                    WorkspaceUser workspaceUser = optionalWorkspaceUser.get();
+                    workspaceUser.setWorkspaceRole(optionalWorkspaceRole.get());
+                    workspaceUserRepository.save(workspaceUser);
+                    return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Message(false, "The workspace has been successfully edited!"));
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace role is not found!"));
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace us er is not found!"));
+            }
+        } else if (memberDTO.getAddEditRemove().equals(AddEditRemove.REMOVE)) {
+            workspaceUserRepository.deleteByUserIdAndWorkspaceId(memberDTO.getMemberId(), workspaceId);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Message(true, "The workspace is successfully deleted!"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace is not found!"));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message(false, "The method type is undefined!"));
         }
     }
 }

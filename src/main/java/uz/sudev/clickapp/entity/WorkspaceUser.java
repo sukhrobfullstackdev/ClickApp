@@ -22,4 +22,11 @@ public class WorkspaceUser extends AbstractUUIDEntity {
     @Column(nullable = false)
     private Timestamp dateInvited;
     private Timestamp dateJoined;
+
+    public WorkspaceUser(Workspace workspace, User user, WorkspaceRole workspaceRole, Timestamp dateInvited) {
+        this.workspace = workspace;
+        this.user = user;
+        this.workspaceRole = workspaceRole;
+        this.dateInvited = dateInvited;
+    }
 }
