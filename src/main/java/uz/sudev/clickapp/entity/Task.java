@@ -2,20 +2,19 @@ package uz.sudev.clickapp.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import uz.sudev.clickapp.entity.template.AbstractUUIDEntity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.UUID;
-
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-public class Task {
-    @Id
-    @GeneratedValue
-    private UUID id;
+public class Task extends AbstractUUIDEntity {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false, columnDefinition = "text")
