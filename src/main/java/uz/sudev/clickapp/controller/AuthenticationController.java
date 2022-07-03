@@ -22,12 +22,14 @@ public class AuthenticationController {
     public ResponseEntity<Message> register(@Valid @RequestBody RegisterDTO registerDTO) {
         return authenticationService.register(registerDTO);
     }
+
     @GetMapping("/confirmEmail")
     public ResponseEntity<Message> confirmEmail(@RequestParam String emailCode, @RequestParam String sendingEmail) {
         return authenticationService.confirmEmail(emailCode, sendingEmail);
     }
+
     @PostMapping("/login")
-    public ResponseEntity<Message> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<Message> login(@Valid @RequestBody LoginDTO loginDTO) {
         return authenticationService.login(loginDTO);
     }
 }
