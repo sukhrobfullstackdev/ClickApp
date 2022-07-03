@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import uz.sudev.clickapp.entity.*;
 import uz.sudev.clickapp.entity.enums.WorkspacePermissionName;
 import uz.sudev.clickapp.entity.enums.WorkspaceRoleName;
+import uz.sudev.clickapp.payload.MemberDTO;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.WorkspaceDTO;
 import uz.sudev.clickapp.repository.*;
@@ -65,10 +66,22 @@ public class WorkspaceService implements WorkspaceServiceImplement {
                 }
             }
             Workspace savedWorkspace = workspaceRepository.save(workspace);
-            WorkspaceRole workspaceRole = workspaceRoleRepository.save(new WorkspaceRole(savedWorkspace, WorkspaceRoleName.ROLE_OWNER.name(), WorkspaceRoleName.ROLE_OWNER));
+            WorkspaceRole workspaceRole = workspaceRoleRepository.save(new WorkspaceRole(savedWorkspace, WorkspaceRoleName.ROLE_OWNER.name(), null));
+            WorkspaceRole admin = workspaceRoleRepository.save(new WorkspaceRole(savedWorkspace, WorkspaceRoleName.ROLE_ADMIN.name(), null));
+            WorkspaceRole member = workspaceRoleRepository.save(new WorkspaceRole(savedWorkspace, WorkspaceRoleName.ROLE_MEMBER.name(), null));
+            WorkspaceRole guest = workspaceRoleRepository.save(new WorkspaceRole(savedWorkspace, WorkspaceRoleName.ROLE_GUEST.name(), null));
             List<WorkspacePermission> workspacePermissions = new ArrayList<>();
             for (WorkspacePermissionName permission : WorkspacePermissionName.values()) {
                 workspacePermissions.add(new WorkspacePermission(workspaceRole, permission));
+                if (permission.getWorkspaceRoleNames().contains(WorkspaceRoleName.ROLE_ADMIN)) {
+                    workspacePermissions.add(new WorkspacePermission(admin,permission));
+                }
+                if (permission.getWorkspaceRoleNames().contains(WorkspaceRoleName.ROLE_MEMBER)) {
+                    workspacePermissions.add(new WorkspacePermission(member,permission));
+                }
+                if (permission.getWorkspaceRoleNames().contains(WorkspaceRoleName.ROLE_GUEST)) {
+                    workspacePermissions.add(new WorkspacePermission(guest,permission));
+                }
             }
             workspacePermissionRepository.saveAll(workspacePermissions);
             WorkspaceUser workspaceUser = new WorkspaceUser(savedWorkspace, user, workspaceRole, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
@@ -125,6 +138,16 @@ public class WorkspaceService implements WorkspaceServiceImplement {
         if (optionalWorkspace.isPresent()) {
             workspaceRepository.delete(optionalWorkspace.get());
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Message(true, "The workspace is successfully deleted!"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace is not found!"));
+        }
+    }
+
+    @Override
+    public ResponseEntity<Message> addOrEditOrRemoveMemberOfWorkspace(Long workspaceId, MemberDTO memberDTO) {
+        Optional<Workspace> optionalWorkspace = workspaceRepository.findById(workspaceId);
+        if (optionalWorkspace.isPresent()) {
+            return null;
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace is not found!"));
         }

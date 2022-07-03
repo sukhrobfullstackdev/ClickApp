@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import uz.sudev.clickapp.entity.User;
 import uz.sudev.clickapp.entity.Workspace;
+import uz.sudev.clickapp.payload.MemberDTO;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.WorkspaceDTO;
 
@@ -21,4 +22,6 @@ public interface WorkspaceServiceImplement {
     ResponseEntity<Message> changeOwner(Long id, UUID ownerId);
 
     ResponseEntity<Message> deleteWorkspace(Long id);
+
+    ResponseEntity<Message> addOrEditOrRemoveMemberOfWorkspace(Long workspaceId, MemberDTO memberDTO);
 }
