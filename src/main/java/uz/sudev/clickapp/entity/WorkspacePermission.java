@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Entity
 public class WorkspacePermission extends AbstractUUIDEntity {
     @ManyToOne
-    private WorkspaceRole workspaceRoleId;
+    private WorkspaceRole workspaceRole;
     @Enumerated(EnumType.STRING)
     private WorkspacePermissionName permission;
 }

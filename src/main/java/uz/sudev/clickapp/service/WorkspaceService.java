@@ -1,14 +1,13 @@
 package uz.sudev.clickapp.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import uz.sudev.clickapp.entity.*;
+import uz.sudev.clickapp.entity.enums.WorkspacePermissionName;
 import uz.sudev.clickapp.entity.enums.WorkspaceRoleName;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.WorkspaceDTO;
@@ -16,6 +15,8 @@ import uz.sudev.clickapp.repository.*;
 import uz.sudev.clickapp.service.implement.WorkspaceServiceImplement;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,13 +27,15 @@ public class WorkspaceService implements WorkspaceServiceImplement {
     final UserRepository userRepository;
     final WorkspaceUserRepository workspaceUserRepository;
     final WorkspaceRoleRepository workspaceRoleRepository;
+    final WorkspacePermissionRepository workspacePermissionRepository;
 
-    public WorkspaceService(WorkspaceRepository workspaceRepository, AttachmentRepository attachmentRepository, UserRepository userRepository, WorkspaceUserRepository workspaceUserRepository, WorkspaceRoleRepository workspaceRoleRepository) {
+    public WorkspaceService(WorkspaceRepository workspaceRepository, AttachmentRepository attachmentRepository, UserRepository userRepository, WorkspaceUserRepository workspaceUserRepository, WorkspaceRoleRepository workspaceRoleRepository, WorkspacePermissionRepository workspacePermissionRepository) {
         this.workspaceRepository = workspaceRepository;
         this.attachmentRepository = attachmentRepository;
         this.userRepository = userRepository;
         this.workspaceUserRepository = workspaceUserRepository;
         this.workspaceRoleRepository = workspaceRoleRepository;
+        this.workspacePermissionRepository = workspacePermissionRepository;
     }
 
     @Override
@@ -62,7 +65,12 @@ public class WorkspaceService implements WorkspaceServiceImplement {
                 }
             }
             Workspace savedWorkspace = workspaceRepository.save(workspace);
-            WorkspaceRole workspaceRole = new WorkspaceRole(savedWorkspace, WorkspaceRoleName.ROLE_OWNER.name(), null);
+            WorkspaceRole workspaceRole = workspaceRoleRepository.save(new WorkspaceRole(savedWorkspace, WorkspaceRoleName.ROLE_OWNER.name(), WorkspaceRoleName.ROLE_OWNER));
+            List<WorkspacePermission> workspacePermissions = new ArrayList<>();
+            for (WorkspacePermissionName permission : WorkspacePermissionName.values()) {
+                workspacePermissions.add(new WorkspacePermission(workspaceRole, permission));
+            }
+            workspacePermissionRepository.saveAll(workspacePermissions);
             WorkspaceUser workspaceUser = new WorkspaceUser(savedWorkspace, user, workspaceRole, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
             workspaceUserRepository.save(workspaceUser);
             return ResponseEntity.status(HttpStatus.CREATED).body(new Message(true, "The workspace is successfully created!"));

@@ -21,7 +21,7 @@ public class RegisterDTO {
     @Size(min = 5)
     private String lastName;
     @NotNull(message = "Please enter your active email!")
-    @Email
+    //@Email
     private String email;
     @NotNull(message = "Please enter your password!")
     @Size(min = 8)
