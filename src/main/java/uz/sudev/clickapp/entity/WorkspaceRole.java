@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Entity
 public class WorkspaceRole extends AbstractUUIDEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Workspace workspaceId;
+    private Workspace workspace;
     @Column(nullable = false)
     private String name;
     @Enumerated(EnumType.STRING)

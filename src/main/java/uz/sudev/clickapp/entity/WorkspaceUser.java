@@ -7,7 +7,6 @@ import uz.sudev.clickapp.entity.template.AbstractUUIDEntity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,11 +14,11 @@ import java.util.UUID;
 @Entity
 public class WorkspaceUser extends AbstractUUIDEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Workspace workspaceId;
+    private Workspace workspace;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private User userId;
+    private User user;
     @ManyToOne
-    private WorkspaceRole workspaceRoleId;
+    private WorkspaceRole workspaceRole;
     @Column(nullable = false)
     private Timestamp dateInvited;
     private Timestamp dateJoined;
