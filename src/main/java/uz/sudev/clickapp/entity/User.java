@@ -29,18 +29,26 @@ public class User extends AbstractUUIDEntity implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
     private String color;
-    @Column(nullable = false)
     private String initialLetter;
     @OneToOne(fetch = FetchType.LAZY)
     private Attachment avatarId;
+    private String emailCode;
     @Enumerated(EnumType.STRING)
     private SystemRoleName systemRoleName;
     private boolean enabled;
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
+
+    public User(String firstName, String lastName, String email, String password, SystemRoleName systemRoleName,String emailCode) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.systemRoleName = systemRoleName;
+        this.emailCode = emailCode;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -3,6 +3,7 @@ package uz.sudev.clickapp.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +28,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     final AuthenticationService authenticationService;
     final JWTFilter jwtFilter;
 
-    public SecurityConfiguration(AuthenticationService authenticationService, JWTFilter jwtFilter) {
+    public SecurityConfiguration(@Lazy AuthenticationService authenticationService, @Lazy JWTFilter jwtFilter) {
         this.authenticationService = authenticationService;
         this.jwtFilter = jwtFilter;
     }
