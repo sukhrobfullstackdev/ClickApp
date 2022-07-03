@@ -2,22 +2,23 @@ package uz.sudev.clickapp.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import uz.sudev.clickapp.entity.enums.WorkspaceRoleName;
+import uz.sudev.clickapp.entity.template.AbstractUUIDEntity;
 
 import javax.persistence.*;
-import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-public class WorkspaceRole {
-    @Id
-    @GeneratedValue
-    private UUID id;
-    @ManyToOne(optional = false)
+public class WorkspaceRole extends AbstractUUIDEntity {
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Workspace workspaceId;
     @Column(nullable = false)
     private String name;
-    private String extendsRole; // may change
+    @Enumerated(EnumType.STRING)
+    private WorkspaceRoleName extendsRole;
 }

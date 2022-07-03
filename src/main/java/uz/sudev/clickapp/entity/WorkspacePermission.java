@@ -2,22 +2,21 @@ package uz.sudev.clickapp.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import uz.sudev.clickapp.entity.enums.Permission;
+import uz.sudev.clickapp.entity.enums.WorkspacePermissionName;
+import uz.sudev.clickapp.entity.template.AbstractUUIDEntity;
 
 import javax.persistence.*;
-import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-public class WorkspacePermission {
-    @Id
-    @GeneratedValue
-    private UUID id;
+public class WorkspacePermission extends AbstractUUIDEntity {
     @ManyToOne
     private WorkspaceRole workspaceRoleId;
     @Enumerated(EnumType.STRING)
-    private Permission permission;
+    private WorkspacePermissionName permission;
 }
