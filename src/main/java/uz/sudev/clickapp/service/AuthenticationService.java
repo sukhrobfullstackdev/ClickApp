@@ -42,15 +42,20 @@ public class AuthenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        Optional<User> optionalUser = userRepository.findByEmail(username);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            throw new UsernameNotFoundException(username + " is not found!");
+        }
     }
 
     public ResponseEntity<Message> register(RegisterDTO registerDTO) {
         if (!userRepository.existsByEmail(registerDTO.getEmail())) {
             String code = String.valueOf(new Random().nextInt(9999));
             userRepository.save(new User(registerDTO.getFirstName(), registerDTO.getLastName(), registerDTO.getEmail(), passwordEncoder.encode(registerDTO.getPassword()), SystemRoleName.SYSTEM_ROLE_USER, code));
-            Boolean sentEmil = sendEmail(registerDTO.getEmail(), code);
-            if (sentEmil) {
+            Boolean sentEmail = sendEmail(registerDTO.getEmail(), code);
+            if (sentEmail) {
                 return ResponseEntity.status(HttpStatus.CREATED).body(new Message(true, "A message has sent to your email , please verify your email by entering the code that was sent to your email"));
             } else {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message(false, "An error has occurred while sending a message to your email, please try with another one!"));
