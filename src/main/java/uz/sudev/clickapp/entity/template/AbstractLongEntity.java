@@ -15,5 +15,5 @@ import java.util.UUID;
 public abstract class AbstractLongEntity extends AbstractMainEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private Long id;
 }
