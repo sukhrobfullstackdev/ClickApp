@@ -20,12 +20,13 @@ import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.RegisterDTO;
 import uz.sudev.clickapp.repository.UserRepository;
 import uz.sudev.clickapp.security.JWTProvider;
+import uz.sudev.clickapp.service.implement.AuthenticationServiceImplement;
 
 import java.util.Optional;
 import java.util.Random;
 
 @Service
-public class AuthenticationService implements UserDetailsService {
+public class AuthenticationService implements UserDetailsService, AuthenticationServiceImplement {
     final UserRepository userRepository;
     final PasswordEncoder passwordEncoder;
     final JavaMailSender javaMailSender;
@@ -49,7 +50,7 @@ public class AuthenticationService implements UserDetailsService {
             throw new UsernameNotFoundException(username + " is not found!");
         }
     }
-
+    @Override
     public ResponseEntity<Message> register(RegisterDTO registerDTO) {
         if (!userRepository.existsByEmail(registerDTO.getEmail())) {
             String code = String.valueOf(new Random().nextInt(9999));
@@ -64,7 +65,7 @@ public class AuthenticationService implements UserDetailsService {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message(false, "This email is already in use!"));
         }
     }
-
+    @Override
     public Boolean sendEmail(String sendingEmail, String emailCode) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -78,7 +79,7 @@ public class AuthenticationService implements UserDetailsService {
             return false;
         }
     }
-
+    @Override
     public ResponseEntity<Message> confirmEmail(String emailCode, String sendingEmail) {
         Optional<User> optionalUser = userRepository.findByEmailAndEmailCode(sendingEmail, emailCode);
         if (optionalUser.isPresent()) {
@@ -91,7 +92,7 @@ public class AuthenticationService implements UserDetailsService {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Message(false, "Your account was not confirmed!"));
         }
     }
-
+    @Override
     public ResponseEntity<Message> login(LoginDTO loginDTO) {
         try {
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
