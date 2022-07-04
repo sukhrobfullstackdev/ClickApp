@@ -186,4 +186,17 @@ public class WorkspaceService implements WorkspaceServiceImplement {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message(false, "The method type is undefined!"));
         }
     }
+
+    @Override
+    public ResponseEntity<Message> joinToWorkspace(Long workspaceId, User user) {
+        Optional<WorkspaceUser> optionalWorkspaceUser = workspaceUserRepository.findByUserIdAndWorkspaceId(user.getId(), workspaceId);
+        if (optionalWorkspaceUser.isPresent()) {
+            WorkspaceUser workspaceUser = optionalWorkspaceUser.get();
+            workspaceUser.setDateJoined(new Timestamp(System.currentTimeMillis()));
+            workspaceUserRepository.save(workspaceUser);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Message(true, "You have successfully been added to the workspace!"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace user is not found!"));
+        }
+    }
 }

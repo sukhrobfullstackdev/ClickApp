@@ -24,4 +24,5 @@ public interface WorkspaceServiceImplement {
     ResponseEntity<Message> deleteWorkspace(Long id);
 
     ResponseEntity<Message> addOrEditOrRemoveMemberOfWorkspace(Long workspaceId, MemberDTO memberDTO);
+    ResponseEntity<Message> joinToWorkspace(Long workspaceId, User user);
 }
