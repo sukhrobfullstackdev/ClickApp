@@ -199,4 +199,9 @@ public class WorkspaceService implements WorkspaceServiceImplement {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace user is not found!"));
         }
     }
+
+    @Override
+    public ResponseEntity<Page<Workspace>> getMyWorkspaces(int page, int size, User user) {
+        return ResponseEntity.ok(workspaceRepository.findAllByOwner(user, PageRequest.of(page, size)));
+    }
 }

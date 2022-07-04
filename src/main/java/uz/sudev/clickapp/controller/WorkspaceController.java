@@ -28,6 +28,10 @@ public class WorkspaceController {
     public ResponseEntity<Page<Workspace>> getWorkspaces(@RequestParam int page, @RequestParam int size) {
         return workspaceService.getWorkspaces(page, size);
     }
+    @GetMapping
+    public ResponseEntity<Page<Workspace>> getMyWorkspaces(@RequestParam int page, @RequestParam int size,@CurrentUser User user) {
+        return workspaceService.getMyWorkspaces(page, size,user);
+    }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Workspace> getWorkspace(@PathVariable Long id) {
