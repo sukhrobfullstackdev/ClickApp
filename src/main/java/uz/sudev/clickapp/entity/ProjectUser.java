@@ -16,9 +16,9 @@ import java.util.UUID;
 @Entity
 public class ProjectUser extends AbstractUUIDEntity {
     @ManyToOne(optional = false)
-    private Project projectId;
+    private Project project;
     @ManyToOne(optional = false)
-    private User userId;
+    private User user;
     @Enumerated(EnumType.STRING)
     private TaskPermission taskPermission;
 }
