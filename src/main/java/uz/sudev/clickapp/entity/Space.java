@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import uz.sudev.clickapp.entity.enums.AccessType;
 import uz.sudev.clickapp.entity.template.AbstractUUIDEntity;
 
 import javax.persistence.*;
-import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,13 +19,13 @@ public class Space extends AbstractUUIDEntity {
     @Column(nullable = false)
     private String color;
     @ManyToOne(optional = false)
-    private Workspace workspaceId;
+    private Workspace workspace;
     @Column(nullable = false)
     private String initialLetter;
     @ManyToOne(optional = false)
-    private Icon iconId;
+    private Icon icon;
     @ManyToOne(optional = false)
-    private Attachment avatarId;
+    private Attachment avatar;
     @ManyToOne(optional = false)
     private User ownerId;
     @Enumerated(EnumType.STRING)
