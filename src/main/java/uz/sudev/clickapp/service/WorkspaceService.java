@@ -202,6 +202,6 @@ public class WorkspaceService implements WorkspaceServiceImplement {
 
     @Override
     public ResponseEntity<Page<Workspace>> getMyWorkspaces(int page, int size, User user) {
-        return ResponseEntity.ok(workspaceRepository.findAllByOwner(user, PageRequest.of(page, size)));
+        return ResponseEntity.ok(workspaceRepository.findAllByOwnerId(user.getId(), PageRequest.of(page, size)));
     }
 }

@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
     boolean existsByOwnerIdAndName(UUID owner_id, String name);
-    Page<Workspace> findAllByOwner(User owner, Pageable pageable);
+    Page<Workspace> findAllByOwnerId(UUID owner_id, Pageable pageable);
 
 }
