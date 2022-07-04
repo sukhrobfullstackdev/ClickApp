@@ -27,8 +27,8 @@ public class WorkspaceController {
         return workspaceService.addWorkspace(workspaceDTO, user);
     }
 
-    @PostMapping(value = "/addMember/{workspaceId}")
-    public ResponseEntity<Message> addMember(@PathVariable Long workspaceId, @RequestBody MemberDTO memberDTO) {
+    @PostMapping(value = "/addOrEditOrRemoveMemberOfWorkspace/{workspaceId}")
+    public ResponseEntity<Message> addOrEditOrRemoveMemberOfWorkspace(@PathVariable Long workspaceId, @RequestBody MemberDTO memberDTO) {
         return workspaceService.addOrEditOrRemoveMemberOfWorkspace(workspaceId,memberDTO);
     }
 }
