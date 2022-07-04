@@ -20,12 +20,8 @@ public class WorkspacePermissionController {
         this.workspacePermissionService = workspacePermissionService;
     }
 
-    @GetMapping(value = "/{workspaceId}")
-    public ResponseEntity<List<WorkspacePermission>> getAllPermissions(@PathVariable UUID workspaceId) {
-        return workspacePermissionService.getAllPermissions(workspaceId);
-    }
-    @GetMapping(value = "/{workspaceId}/{roleId}")
-    public ResponseEntity<List<WorkspacePermission>> getPermissionsOfRole(@PathVariable UUID workspaceId,@PathVariable UUID roleId) {
-        return workspacePermissionService.getPermissionsOfRole(workspaceId,roleId);
+    @GetMapping(value = "/{workspaceRoleId}")
+    public ResponseEntity<List<WorkspacePermission>> getAllPermissions(@PathVariable UUID workspaceRoleId) {
+        return workspacePermissionService.getAllPermissions(workspaceRoleId);
     }
 }

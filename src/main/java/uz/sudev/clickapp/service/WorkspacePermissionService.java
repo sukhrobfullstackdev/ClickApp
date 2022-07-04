@@ -18,7 +18,7 @@ public class WorkspacePermissionService implements WorkspacePermissionImplement 
     }
 
     @Override
-    public ResponseEntity<List<WorkspacePermission>> getAllPermissions(UUID workspaceId) {
-        return ResponseEntity.ok(workspacePermissionRepository.findAllByWorkspaceRoleId(workspaceId));
+    public ResponseEntity<List<WorkspacePermission>> getAllPermissions(UUID workspaceRoleId) {
+        return ResponseEntity.ok(workspacePermissionRepository.findAllByWorkspaceRoleId(workspaceRoleId));
     }
 }
