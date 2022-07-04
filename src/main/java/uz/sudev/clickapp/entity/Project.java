@@ -6,9 +6,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import uz.sudev.clickapp.entity.enums.AccessType;
 import uz.sudev.clickapp.entity.template.AbstractLongEntity;
+import uz.sudev.clickapp.payload.ProjectDTO;
 
 import javax.persistence.*;
 import java.util.UUID;
+
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +20,7 @@ public class Project extends AbstractLongEntity {
     @Column(nullable = false)
     private String name;
     @ManyToOne
-    private Space spaceId;
+    private Space space;
     @Enumerated(EnumType.STRING)
     private AccessType accessType;
     private boolean archived;
