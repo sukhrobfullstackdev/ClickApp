@@ -27,11 +27,16 @@ public class Space extends AbstractUUIDEntity {
     @ManyToOne(optional = false)
     private Attachment avatar;
     @ManyToOne(optional = false)
-    private User ownerId;
+    private User owner;
     @Enumerated(EnumType.STRING)
     private AccessType accessType;
-
+    @PrePersist
+    @PreUpdate
+    public void setInitialLetter() {
+        this.initialLetter = name.substring(0, 1);
+    }
     public String getAccessType() {
         return accessType.name();
     }
+
 }
