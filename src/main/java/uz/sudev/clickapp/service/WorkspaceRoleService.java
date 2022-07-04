@@ -12,6 +12,7 @@ import uz.sudev.clickapp.repository.WorkspaceRoleRepository;
 import uz.sudev.clickapp.service.implement.WorkspaceRoleImplement;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class WorkspaceRoleService implements WorkspaceRoleImplement {
@@ -32,6 +33,29 @@ public class WorkspaceRoleService implements WorkspaceRoleImplement {
                 return ResponseEntity.status(HttpStatus.CREATED).body(new Message(true, "The role has been successfully created!"));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Message(false, "This role is already exists in this workspace!"));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace is not found!"));
+        }
+    }
+
+    @Override
+    public ResponseEntity<Message> editRole(UUID id, WorkspaceRoleDTO workspaceRoleDTO) {
+        Optional<Workspace> optionalWorkspace = workspaceRepository.findById(workspaceRoleDTO.getWorkspaceId());
+        if (optionalWorkspace.isPresent()) {
+            Optional<WorkspaceRole> optionalWorkspaceRole = workspaceRoleRepository.findById(id);
+            if (optionalWorkspaceRole.isPresent()) {
+                if (!workspaceRoleRepository.existsByNameAndWorkspaceAndIdNot(workspaceRoleDTO.getName(), optionalWorkspace.get(), id)) {
+                    WorkspaceRole workspaceRole = optionalWorkspaceRole.get();
+                    workspaceRole.setName(workspaceRole.getName());
+                    workspaceRole.setExtendsRole(workspaceRole.getExtendsRole());
+                    workspaceRoleRepository.save(workspaceRole);
+                    return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Message(true, "The workspace role is successfully edited!"));
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Message(false, "The workspace role is already exists!"));
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace role is not found!"));
             }
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace is not found!"));

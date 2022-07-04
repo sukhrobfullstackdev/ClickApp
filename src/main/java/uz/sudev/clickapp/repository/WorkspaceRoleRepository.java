@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface WorkspaceRoleRepository extends JpaRepository<WorkspaceRole, UUID> {
     boolean existsByNameAndWorkspace(String name, Workspace workspace);
+    boolean existsByNameAndWorkspaceAndIdNot(String name, Workspace workspace, UUID id);
 }
