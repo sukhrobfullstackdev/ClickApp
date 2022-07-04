@@ -1,8 +1,11 @@
 package uz.sudev.clickapp.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uz.sudev.clickapp.entity.User;
 import uz.sudev.clickapp.entity.Workspace;
 import uz.sudev.clickapp.entity.WorkspaceRole;
 import uz.sudev.clickapp.payload.Message;
@@ -22,6 +25,17 @@ public class WorkspaceRoleService implements WorkspaceRoleImplement {
     public WorkspaceRoleService(WorkspaceRepository workspaceRepository, WorkspaceRoleRepository workspaceRoleRepository) {
         this.workspaceRepository = workspaceRepository;
         this.workspaceRoleRepository = workspaceRoleRepository;
+    }
+
+    @Override
+    public ResponseEntity<Page<WorkspaceRole>> getRoles(int page, int size, Long workspaceId) {
+        return ResponseEntity.ok(workspaceRoleRepository.findAllByWorkspaceId(workspaceId, PageRequest.of(page, size)));
+    }
+
+    @Override
+    public ResponseEntity<WorkspaceRole> getRole(Long workspaceId, UUID roleId) {
+        Optional<WorkspaceRole> optionalWorkspaceRole = workspaceRoleRepository.findByIdAndWorkspaceId(roleId, workspaceId);
+        return optionalWorkspaceRole.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     @Override
@@ -59,6 +73,17 @@ public class WorkspaceRoleService implements WorkspaceRoleImplement {
             }
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace is not found!"));
+        }
+    }
+
+    @Override
+    public ResponseEntity<Message> deleteRole(UUID id) {
+        Optional<WorkspaceRole> optionalWorkspaceRole = workspaceRoleRepository.findById(id);
+        if (optionalWorkspaceRole.isPresent()) {
+            workspaceRoleRepository.delete(optionalWorkspaceRole.get());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Message(true, "The workspace role is successfully deleted!"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace role is not found!"));
         }
     }
 }
