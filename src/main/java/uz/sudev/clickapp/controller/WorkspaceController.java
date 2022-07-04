@@ -1,10 +1,12 @@
 package uz.sudev.clickapp.controller;
 
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.sudev.clickapp.annotations.CurrentUser;
 import uz.sudev.clickapp.entity.User;
+import uz.sudev.clickapp.entity.Workspace;
 import uz.sudev.clickapp.payload.MemberDTO;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.WorkspaceDTO;
@@ -22,17 +24,43 @@ public class WorkspaceController {
         this.workspaceService = workspaceService;
     }
 
+    @GetMapping
+    public ResponseEntity<Page<Workspace>> getWorkspaces(@RequestParam int page, @RequestParam int size) {
+        return workspaceService.getWorkspaces(page, size);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Workspace> getWorkspace(@PathVariable Long id) {
+        return workspaceService.getWorkspace(id);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Message> editWorkspace(@PathVariable Long id, @RequestBody WorkspaceDTO workspaceDTO) {
+        return workspaceService.editWorkspace(id, workspaceDTO);
+    }
+
+    @PutMapping(value = "/changeOwner")
+    public ResponseEntity<Message> changeOwner(@RequestParam Long id, @RequestParam UUID ownerId) {
+        return workspaceService.changeOwner(id, ownerId);
+    }
+
     @PostMapping
     public ResponseEntity<Message> addWorkspace(@Valid @RequestBody WorkspaceDTO workspaceDTO, @CurrentUser User user) {
         return workspaceService.addWorkspace(workspaceDTO, user);
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Message> deleteWorkspace(@PathVariable Long id) {
+        return workspaceService.deleteWorkspace(id);
+    }
+
     @PostMapping(value = "/addOrEditOrRemoveMemberOfWorkspace/{workspaceId}")
     public ResponseEntity<Message> addOrEditOrRemoveMemberOfWorkspace(@PathVariable Long workspaceId, @RequestBody MemberDTO memberDTO) {
-        return workspaceService.addOrEditOrRemoveMemberOfWorkspace(workspaceId,memberDTO);
+        return workspaceService.addOrEditOrRemoveMemberOfWorkspace(workspaceId, memberDTO);
     }
-    @PostMapping(value = "/joinToWorkspace")
-    public ResponseEntity<Message> joinToWorkspace(@RequestParam Long workspaceId, @RequestBody MemberDTO memberDTO,@CurrentUser User user) {
-        return workspaceService.joinToWorkspace(workspaceId,user);
+
+    @PutMapping(value = "/joinToWorkspace")
+    public ResponseEntity<Message> joinToWorkspace(@RequestParam Long workspaceId, @CurrentUser User user) {
+        return workspaceService.joinToWorkspace(workspaceId, user);
     }
 }
