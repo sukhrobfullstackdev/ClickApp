@@ -11,7 +11,7 @@ import java.util.Set;
 public class JWTProvider {
     long expireTime = 1000 * 60 * 60;
     Date expireDate = new Date(System.currentTimeMillis() + expireTime);
-    String secretKey = "secretKey";
+    String secretKey = "Shirin";
 
     public String generateToken(String username) {
         return Jwts.builder().setSubject(username).setIssuedAt(new Date()).setExpiration(expireDate).signWith(SignatureAlgorithm.HS512, secretKey).compact();
