@@ -4,8 +4,6 @@ package uz.sudev.clickapp.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.sudev.clickapp.annotations.CurrentUser;
-import uz.sudev.clickapp.entity.User;
 import uz.sudev.clickapp.entity.WorkspaceRole;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.WorkspaceRoleDTO;
