@@ -1,5 +1,6 @@
 package uz.sudev.clickapp.payload;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
+@JsonInclude(JsonInclude.Include.NON_NULL) // null bo'lgan fieldlarni bervormidi client larga
 public class Message {
     private boolean success;
     private String message;
