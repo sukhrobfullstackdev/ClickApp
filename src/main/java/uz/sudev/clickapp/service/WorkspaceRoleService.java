@@ -7,13 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.sudev.clickapp.entity.User;
 import uz.sudev.clickapp.entity.Workspace;
+import uz.sudev.clickapp.entity.WorkspacePermission;
 import uz.sudev.clickapp.entity.WorkspaceRole;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.WorkspaceRoleDTO;
+import uz.sudev.clickapp.repository.WorkspacePermissionRepository;
 import uz.sudev.clickapp.repository.WorkspaceRepository;
 import uz.sudev.clickapp.repository.WorkspaceRoleRepository;
 import uz.sudev.clickapp.service.implement.WorkspaceRoleImplement;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,10 +25,12 @@ import java.util.UUID;
 public class WorkspaceRoleService implements WorkspaceRoleImplement {
     final WorkspaceRepository workspaceRepository;
     final WorkspaceRoleRepository workspaceRoleRepository;
+    final WorkspacePermissionRepository workspacePermissionRepository;
 
-    public WorkspaceRoleService(WorkspaceRepository workspaceRepository, WorkspaceRoleRepository workspaceRoleRepository) {
+    public WorkspaceRoleService(WorkspaceRepository workspaceRepository, WorkspaceRoleRepository workspaceRoleRepository,WorkspacePermissionRepository workspacePermissionRepository) {
         this.workspaceRepository = workspaceRepository;
         this.workspaceRoleRepository = workspaceRoleRepository;
+        this.workspacePermissionRepository = workspacePermissionRepository;
     }
 
     @Override
@@ -43,7 +49,13 @@ public class WorkspaceRoleService implements WorkspaceRoleImplement {
         Optional<Workspace> optionalWorkspace = workspaceRepository.findById(workspaceRoleDTO.getWorkspaceId());
         if (optionalWorkspace.isPresent()) {
             if (!workspaceRoleRepository.existsByNameAndWorkspace(workspaceRoleDTO.getName(), optionalWorkspace.get())) {
-                workspaceRoleRepository.save(new WorkspaceRole(optionalWorkspace.get(), workspaceRoleDTO.getName(), workspaceRoleDTO.getExtendsRole()));
+                WorkspaceRole workspaceRole = workspaceRoleRepository.save(new WorkspaceRole(optionalWorkspace.get(), workspaceRoleDTO.getName(), workspaceRoleDTO.getExtendsRole()));
+                List<WorkspacePermission> allPermissions = workspacePermissionRepository.findAllByWorkspaceRole_NameAndWorkspaceRole_WorkspaceId(workspaceRoleDTO.getName(), workspaceRoleDTO.getWorkspaceId());
+                List<WorkspacePermission> savingWorkspacePermission = new ArrayList<>();
+                for (WorkspacePermission permission : allPermissions) {
+                    savingWorkspacePermission.add(new WorkspacePermission(workspaceRole,permission.getPermission()));
+                }
+                workspacePermissionRepository.saveAll(savingWorkspacePermission);
                 return ResponseEntity.status(HttpStatus.CREATED).body(new Message(true, "The role has been successfully created!"));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Message(false, "This role is already exists in this workspace!"));
