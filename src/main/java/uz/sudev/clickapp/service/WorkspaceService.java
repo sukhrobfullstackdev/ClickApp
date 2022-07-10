@@ -13,6 +13,7 @@ import uz.sudev.clickapp.entity.enums.WorkspaceRoleName;
 import uz.sudev.clickapp.payload.MemberDTO;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.WorkspaceDTO;
+import uz.sudev.clickapp.payload.WorkspaceRoleDTO;
 import uz.sudev.clickapp.repository.*;
 import uz.sudev.clickapp.service.implement.WorkspaceServiceImplement;
 
@@ -203,5 +204,32 @@ public class WorkspaceService implements WorkspaceServiceImplement {
     @Override
     public ResponseEntity<Page<Workspace>> getMyWorkspaces(int page, int size, User user) {
         return ResponseEntity.ok(workspaceRepository.findAllByOwnerId(user.getId(), PageRequest.of(page, size)));
+    }
+
+    @Override
+    public ResponseEntity<Message> addOrRemovePermissionToRole(WorkspaceRoleDTO workspaceRoleDTO) {
+        Optional<WorkspaceRole> optionalWorkspaceRole = workspaceRoleRepository.findById(workspaceRoleDTO.getId());
+        if (optionalWorkspaceRole.isPresent()) {
+            Optional<WorkspacePermission> optionalWorkspacePermission = workspacePermissionRepository.findByWorkspaceRoleIdAndPermission(optionalWorkspaceRole.get().getId(), workspaceRoleDTO.getWorkspacePermissionName());
+            if (workspaceRoleDTO.getAddEditRemove().equals(AddEditRemove.ADD)) {
+                if (optionalWorkspacePermission.isEmpty()) {
+                    workspacePermissionRepository.save(new WorkspacePermission(optionalWorkspaceRole.get(), workspaceRoleDTO.getWorkspacePermissionName()));
+                    return ResponseEntity.status(HttpStatus.CREATED).body(new Message(true, "The permission has been successfully added to this role!"));
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Message(false, "The permission is already exists!"));
+                }
+            } else if (workspaceRoleDTO.getAddEditRemove().equals(AddEditRemove.REMOVE)) {
+                if (optionalWorkspacePermission.isPresent()) {
+                    workspacePermissionRepository.delete(optionalWorkspacePermission.get());
+                    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Message(true,"The permission has been successfully deleted!"));
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false,"The permission is not found!"));
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, ""));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The workspace role is not found!"));
+        }
     }
 }

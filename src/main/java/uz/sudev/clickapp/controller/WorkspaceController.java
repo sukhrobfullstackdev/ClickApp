@@ -10,6 +10,7 @@ import uz.sudev.clickapp.entity.Workspace;
 import uz.sudev.clickapp.payload.MemberDTO;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.WorkspaceDTO;
+import uz.sudev.clickapp.payload.WorkspaceRoleDTO;
 import uz.sudev.clickapp.service.WorkspaceService;
 
 import javax.validation.Valid;
@@ -66,5 +67,9 @@ public class WorkspaceController {
     @PutMapping(value = "/joinToWorkspace")
     public ResponseEntity<Message> joinToWorkspace(@RequestParam Long workspaceId, @CurrentUser User user) {
         return workspaceService.joinToWorkspace(workspaceId, user);
+    }
+    @PutMapping(value = "/addOrRemovePermission")
+    public ResponseEntity<Message> addOrRemovePermissionToRole(@RequestBody WorkspaceRoleDTO workspaceRoleDTO){
+        return workspaceService.addOrRemovePermissionToRole(workspaceRoleDTO);
     }
 }

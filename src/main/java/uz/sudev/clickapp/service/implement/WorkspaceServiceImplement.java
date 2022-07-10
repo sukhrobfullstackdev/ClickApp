@@ -7,6 +7,7 @@ import uz.sudev.clickapp.entity.Workspace;
 import uz.sudev.clickapp.payload.MemberDTO;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.WorkspaceDTO;
+import uz.sudev.clickapp.payload.WorkspaceRoleDTO;
 
 import java.util.UUID;
 
@@ -27,4 +28,6 @@ public interface WorkspaceServiceImplement {
     ResponseEntity<Message> joinToWorkspace(Long workspaceId, User user);
 
     ResponseEntity<Page<Workspace>> getMyWorkspaces(int page, int size, User user);
+
+    ResponseEntity<Message> addOrRemovePermissionToRole(WorkspaceRoleDTO workspaceRoleDTO);
 }
