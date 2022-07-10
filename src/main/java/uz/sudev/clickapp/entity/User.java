@@ -11,7 +11,6 @@ import uz.sudev.clickapp.entity.enums.SystemRoleName;
 import uz.sudev.clickapp.entity.template.AbstractUUIDEntity;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 

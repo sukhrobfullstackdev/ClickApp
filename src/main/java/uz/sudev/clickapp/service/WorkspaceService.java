@@ -181,7 +181,7 @@ public class WorkspaceService implements WorkspaceServiceImplement {
             }
         } else if (memberDTO.getAddEditRemove().equals(AddEditRemove.REMOVE)) {
             workspaceUserRepository.deleteByUserIdAndWorkspaceId(memberDTO.getMemberId(), workspaceId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Message(true, "The workspace is successfully deleted!"));
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Message(true, "The workspace user is successfully deleted!"));
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Message(false, "The method type is undefined!"));
         }
