@@ -9,27 +9,30 @@ import org.springframework.stereotype.Service;
 import uz.sudev.clickapp.entity.*;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.SpaceDTO;
-import uz.sudev.clickapp.repository.AttachmentRepository;
-import uz.sudev.clickapp.repository.IconRepository;
-import uz.sudev.clickapp.repository.SpaceRepository;
-import uz.sudev.clickapp.repository.WorkspaceRepository;
+import uz.sudev.clickapp.repository.*;
 import uz.sudev.clickapp.service.implement.SpaceImplement;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class SpaceService implements SpaceImplement {
     final WorkspaceRepository workspaceRepository;
+    final WorkspaceUserRepository workspaceUserRepository;
     final SpaceRepository spaceRepository;
+    final SpaceUserRepository spaceUserRepository;
     final AttachmentRepository attachmentRepository;
     final IconRepository iconRepository;
 
-    public SpaceService(WorkspaceRepository workspaceRepository, SpaceRepository spaceRepository, AttachmentRepository attachmentRepository, IconRepository iconRepository) {
+    public SpaceService(WorkspaceRepository workspaceRepository, SpaceRepository spaceRepository, AttachmentRepository attachmentRepository, IconRepository iconRepository,WorkspaceUserRepository workspaceUserRepository,SpaceUserRepository spaceUserRepository) {
         this.workspaceRepository = workspaceRepository;
         this.spaceRepository = spaceRepository;
         this.attachmentRepository = attachmentRepository;
         this.iconRepository = iconRepository;
+        this.workspaceUserRepository = workspaceUserRepository;
+        this.spaceUserRepository = spaceUserRepository;
     }
 
     @Override
@@ -59,7 +62,13 @@ public class SpaceService implements SpaceImplement {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The icon is not found!"));
                     }
                 }
-                spaceRepository.save(space);
+                Space savedSpace = spaceRepository.save(space);
+                List<WorkspaceUser> workspaceUsers = workspaceUserRepository.findAllByWorkspaceId(spaceDTO.getWorkspaceId());
+                List<SpaceUser> spaceUsers = new ArrayList<>();
+                for (WorkspaceUser workspaceUser : workspaceUsers) {
+                    spaceUsers.add(new SpaceUser(savedSpace,workspaceUser.getUser()));
+                }
+                spaceUserRepository.saveAll(spaceUsers);
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Message(true, "The space is successfully added!"));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Message(false, "The space is already exists by this name!"));

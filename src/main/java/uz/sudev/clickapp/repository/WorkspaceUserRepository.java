@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import uz.sudev.clickapp.entity.User;
+import uz.sudev.clickapp.entity.Workspace;
 import uz.sudev.clickapp.entity.WorkspaceUser;
 
 import java.util.List;
@@ -19,4 +21,5 @@ public interface WorkspaceUserRepository extends JpaRepository<WorkspaceUser, UU
     @Transactional
     @Modifying // shunchaki ishni bajarsin bizga natijasi kere mas!
     void deleteByUserIdAndWorkspaceId(UUID user_id, Long workspace_id);
+    List<WorkspaceUser> findAllByWorkspaceId(Long workspace_id);
 }
