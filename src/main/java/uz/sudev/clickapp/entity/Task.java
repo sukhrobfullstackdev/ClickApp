@@ -9,6 +9,8 @@ import uz.sudev.clickapp.entity.template.AbstractUUIDEntity;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +23,7 @@ public class Task extends AbstractUUIDEntity {
     private String description;
     @ManyToOne
     private Status status;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Category category;
     @ManyToOne
     private Priority priority;
@@ -33,4 +35,8 @@ public class Task extends AbstractUUIDEntity {
     private boolean dueTimeHas;
     private long estimateTime;
     private Timestamp activatedDate;
+
+    public void setEstimateTime() {
+        this.estimateTime = TimeUnit.MILLISECONDS.toSeconds(startedDate.getTime() - dueDate.getTime());
+    }
 }
