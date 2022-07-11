@@ -17,11 +17,11 @@ public class Status extends AbstractUUIDEntity {
     @Column(nullable = false)
     private String name;
     @ManyToOne
-    private Space spaceId;
+    private Space space;
     @ManyToOne
-    private Project projectId;
+    private Project project;
     @ManyToOne
-    private Category categoryId;
+    private Category category;
     @Column(nullable = false)
     private String color;
     @Enumerated(EnumType.STRING)
