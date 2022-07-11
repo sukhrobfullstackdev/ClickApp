@@ -19,5 +19,5 @@ import java.util.UUID;
 public class View extends AbstractUUIDEntity {
     private String name;
     @ManyToOne
-    private Icon iconId;
+    private Icon icon;
 }

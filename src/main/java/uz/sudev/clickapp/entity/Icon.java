@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Entity
 public class Icon extends AbstractLongEntity {
     @ManyToOne
-    private Attachment attachmentId;
+    private Attachment attachment;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)

@@ -17,8 +17,8 @@ import java.util.UUID;
 @Data
 @Entity
 public class SpaceView extends AbstractUUIDEntity {
-    @ManyToOne
-    private Space spaceId;
-    @ManyToOne
-    private View viewId;
+    @ManyToOne(optional = false)
+    private Space space;
+    @ManyToOne(optional = false)
+    private View view;
 }
