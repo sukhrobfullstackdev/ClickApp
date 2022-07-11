@@ -37,8 +37,10 @@ public class WorkspacePermissionService implements WorkspacePermissionImplement 
         Optional<WorkspaceRole> optionalWorkspaceRole = workspaceRoleRepository.findById(workspaceRoleId);
         if (optionalWorkspaceRole.isPresent()) {
             WorkspaceRole workspaceRole = optionalWorkspaceRole.get();
+            List<WorkspacePermissionName> allByWorkspaceRoleId = workspacePermissionRepository.findAllByWorkspaceRole(optionalWorkspaceRole.get());
+            allByWorkspaceRoleId.addAll(workspacePermissionDTO.getPermissions());
             List<WorkspacePermission> workspacePermissions = new ArrayList<>();
-            for (WorkspacePermissionName permission : workspacePermissionDTO.getPermissions()) {
+            for (WorkspacePermissionName permission : allByWorkspaceRoleId) {
                 workspacePermissions.add(new WorkspacePermission(workspaceRole, permission));
             }
             workspacePermissionRepository.saveAll(workspacePermissions);

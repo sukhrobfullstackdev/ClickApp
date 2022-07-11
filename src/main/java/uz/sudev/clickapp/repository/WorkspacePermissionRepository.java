@@ -14,6 +14,7 @@ import java.util.UUID;
 @Repository
 public interface WorkspacePermissionRepository extends JpaRepository<WorkspacePermission, UUID> {
     List<WorkspacePermission> findAllByWorkspaceRoleId(UUID workspaceRole_id);
+    List<WorkspacePermissionName> findAllByWorkspaceRole(WorkspaceRole workspaceRole);
     List<WorkspacePermission> findWorkspacePermissionsByWorkspaceRole_ExtendsRole(WorkspaceRoleName workspaceRole_extendsRole);
     List<WorkspacePermission> findAllByWorkspaceRole_NameAndWorkspaceRole_WorkspaceId(String workspaceRole_name, Long workspaceRole_workspace_id);
     void deleteAllByWorkspaceRoleId(UUID workspaceRole_id);
