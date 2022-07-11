@@ -20,13 +20,13 @@ public class Task extends AbstractUUIDEntity {
     @Column(nullable = false, columnDefinition = "text")
     private String description;
     @ManyToOne
-    private Status statusId;
+    private Status status;
     @ManyToOne
-    private Category categoryId;
+    private Category category;
     @ManyToOne
-    private Priority priorityId;
+    private Priority priority;
     @ManyToOne
-    private Task parentTaskId;
+    private Task parentTask;
     private Timestamp startedDate;
     private boolean startTimeHas;
     private Timestamp dueDate;
