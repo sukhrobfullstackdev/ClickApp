@@ -16,6 +16,6 @@ import java.util.UUID;
 public class Tag extends AbstractLongEntity {
     private String name;
     private String color;
-    @ManyToOne
-    private Workspace workspaceId;
+    @ManyToOne(optional = false)
+    private Workspace workspace;
 }
