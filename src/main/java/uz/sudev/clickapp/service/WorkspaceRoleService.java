@@ -50,7 +50,7 @@ public class WorkspaceRoleService implements WorkspaceRoleImplement {
         if (optionalWorkspace.isPresent()) {
             if (!workspaceRoleRepository.existsByNameAndWorkspace(workspaceRoleDTO.getName(), optionalWorkspace.get())) {
                 WorkspaceRole workspaceRole = workspaceRoleRepository.save(new WorkspaceRole(optionalWorkspace.get(), workspaceRoleDTO.getName(), workspaceRoleDTO.getExtendsRole()));
-                List<WorkspacePermission> allPermissions = workspacePermissionRepository.findAllByWorkspaceRole_NameAndWorkspaceRole_WorkspaceId(workspaceRoleDTO.getName(), workspaceRoleDTO.getWorkspaceId());
+                List<WorkspacePermission> allPermissions = workspacePermissionRepository.findWorkspacePermissionsByWorkspaceRole_ExtendsRole(workspaceRoleDTO.getExtendsRole());
                 List<WorkspacePermission> savingWorkspacePermission = new ArrayList<>();
                 for (WorkspacePermission permission : allPermissions) {
                     savingWorkspacePermission.add(new WorkspacePermission(workspaceRole,permission.getPermission()));
