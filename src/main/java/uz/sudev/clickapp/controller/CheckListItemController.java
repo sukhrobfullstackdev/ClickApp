@@ -39,6 +39,11 @@ public class CheckListItemController {
         return checkListItemService.editCheckListItem(checkListItemDTO, id);
     }
 
+    @PutMapping(value = "/assignUser/{checkListItemId}/{userId}")
+    public ResponseEntity<Message> assignUser(@PathVariable UUID checkListItemId,@PathVariable UUID userId) {
+        return checkListItemService.assignUser(checkListItemId, userId);
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Message> deleteCheckListItem(@PathVariable UUID id) {
         return checkListItemService.deleteCheckListItem(id);

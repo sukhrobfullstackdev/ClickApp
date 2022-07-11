@@ -101,4 +101,22 @@ public class CheckListItemServiceImpl implements CheckListItemService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The check list item is not found!"));
         }
     }
+
+    @Override
+    public ResponseEntity<Message> assignUser(UUID checkListItemId, UUID userId) {
+        Optional<CheckListItem> optionalCheckListItem = checkListItemRepository.findById(checkListItemId);
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalCheckListItem.isPresent()) {
+            if (optionalUser.isPresent()) {
+                CheckListItem checkListItem = optionalCheckListItem.get();
+                checkListItem.setAssignedUser(optionalUser.get());
+                checkListItemRepository.save(checkListItem);
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Message(true, "The user has been successfully assigned to this check list item!"));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The user is not found!"));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The check list item is not found!"));
+        }
+    }
 }

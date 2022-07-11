@@ -18,4 +18,6 @@ public interface CheckListItemService {
     ResponseEntity<Message> editCheckListItem(CheckListItemDTO checkListItemDTO, UUID id);
 
     ResponseEntity<Message> deleteCheckListItem(UUID id);
+
+    ResponseEntity<Message> assignUser(UUID checkListItemId, UUID userId);
 }
