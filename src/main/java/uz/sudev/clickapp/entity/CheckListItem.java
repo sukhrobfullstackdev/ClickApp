@@ -16,8 +16,8 @@ import java.util.UUID;
 public class CheckListItem extends AbstractUUIDEntity {
     private String name;
     @ManyToOne
-    private CheckList checkListId;
+    private CheckList checkList;
     private boolean resolved;
     @ManyToOne
-    private User assignedUserId;
+    private User assignedUser;
 }
