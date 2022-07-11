@@ -17,8 +17,8 @@ import java.util.UUID;
 @Data
 @Entity
 public class TaskTag extends AbstractUUIDEntity {
-    @ManyToOne
-    private Task taskId;
-    @ManyToOne
-    private Tag tagId;
+    @ManyToOne(optional = false)
+    private Task task;
+    @ManyToOne(optional = false)
+    private Tag tag;
 }
