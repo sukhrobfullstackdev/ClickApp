@@ -17,5 +17,5 @@ public class Comment extends AbstractUUIDEntity {
     @Column(nullable = false)
     private String name;
     @ManyToOne
-    private Task taskId;
+    private Task task;
 }
