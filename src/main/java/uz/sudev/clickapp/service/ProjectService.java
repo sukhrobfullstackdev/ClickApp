@@ -7,24 +7,34 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.sudev.clickapp.entity.Project;
+import uz.sudev.clickapp.entity.ProjectUser;
 import uz.sudev.clickapp.entity.Space;
+import uz.sudev.clickapp.entity.SpaceUser;
 import uz.sudev.clickapp.payload.Message;
 import uz.sudev.clickapp.payload.ProjectDTO;
 import uz.sudev.clickapp.repository.ProjectRepository;
+import uz.sudev.clickapp.repository.ProjectUserRepository;
 import uz.sudev.clickapp.repository.SpaceRepository;
+import uz.sudev.clickapp.repository.SpaceUserRepository;
 import uz.sudev.clickapp.service.implement.ProjectImplement;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ProjectService implements ProjectImplement {
     final ProjectRepository projectRepository;
+    final ProjectUserRepository projectUserRepository;
     final SpaceRepository spaceRepository;
+    final SpaceUserRepository spaceUserRepository;
 
-    public ProjectService(ProjectRepository projectRepository, SpaceRepository spaceRepository) {
+    public ProjectService(ProjectRepository projectRepository, SpaceRepository spaceRepository,ProjectUserRepository projectUserRepository,SpaceUserRepository spaceUserRepository) {
         this.projectRepository = projectRepository;
         this.spaceRepository = spaceRepository;
+        this.projectUserRepository = projectUserRepository;
+        this.spaceUserRepository = spaceUserRepository;
     }
 
     @Override
@@ -43,8 +53,14 @@ public class ProjectService implements ProjectImplement {
         Optional<Space> optionalSpace = spaceRepository.findById(projectDTO.getSpaceId());
         if (optionalSpace.isPresent()) {
             if (!projectRepository.existsByNameAndSpaceId(projectDTO.getName(), projectDTO.getSpaceId())) {
-                projectRepository.save(new Project(projectDTO.getName(), optionalSpace.get(), projectDTO.getAccessType(), projectDTO.isArchived(), projectDTO.getColor()));
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The space has been successfully added!"));
+                Project savedProject = projectRepository.save(new Project(projectDTO.getName(), optionalSpace.get(), projectDTO.getAccessType(), projectDTO.isArchived(), projectDTO.getColor()));
+                List<SpaceUser> all = spaceUserRepository.findAllBySpaceIdId(projectDTO.getSpaceId());
+                List<ProjectUser> projectUsers = new ArrayList<>();
+                for (SpaceUser spaceUser : all) {
+                    projectUsers.add(new ProjectUser(savedProject,spaceUser.getMemberId()));
+                }
+                projectUserRepository.saveAll(projectUsers);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message(false, "The project has been successfully added!"));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Message(false, "The project is already exists!"));
             }

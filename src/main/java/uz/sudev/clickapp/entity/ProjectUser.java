@@ -21,4 +21,9 @@ public class ProjectUser extends AbstractUUIDEntity {
     private User user;
     @Enumerated(EnumType.STRING)
     private TaskPermission taskPermission;
+
+    public ProjectUser(Project project, User user) {
+        this.project = project;
+        this.user = user;
+    }
 }
