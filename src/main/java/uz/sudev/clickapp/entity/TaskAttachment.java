@@ -14,9 +14,9 @@ import javax.persistence.ManyToOne;
 @Data
 @Entity
 public class TaskAttachment extends AbstractUUIDEntity {
-    @ManyToOne
-    private Task taskId;
-    @ManyToOne
-    private Attachment attachmentId;
+    @ManyToOne(optional = false)
+    private Task task;
+    @ManyToOne(optional = false)
+    private Attachment attachment;
     private boolean pinCoverImage;
 }
